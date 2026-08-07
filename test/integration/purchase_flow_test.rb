@@ -3,6 +3,7 @@ require "test_helper"
 class PurchaseFlowTest < ActionDispatch::IntegrationTest
   def setup
     @store = Store.create!(name: "Tienda Demo")
+    @currency = Currency.create!(code: "CLP", precision: 3, name: "Peso Chileno")
     @provider_a = Provider.create!(name: "Proveedor A")
     @provider_b = Provider.create!(name: "Proveedor B")
     @prod_a1 = Product.create!(provider: @provider_a, name: "A1", price: 1000, stock: 10)

@@ -7,11 +7,11 @@ class Currency < ApplicationRecord
   end
 
   def self.divisor
-    default&.divisor || 1000
+    default.divisor
   end
 
   def self.precision
-    default&.precision || 3
+    default.precision
   end
 
   # Factor por el que dividir un monto guardado para obtener unidades de moneda.
