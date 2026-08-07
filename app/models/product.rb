@@ -8,6 +8,6 @@ class Product < ApplicationRecord
   scope :available, -> { where("stock > ?", 0) }
 
   def price_in_currency
-    price / 1000.0
+    price / Currency.divisor
   end
 end

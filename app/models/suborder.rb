@@ -7,7 +7,7 @@ class Suborder < ApplicationRecord
   validate :same_provider_products
 
   def subtotal_in_currency
-    subtotal / 1000.0
+    subtotal / Currency.divisor
   end
 
   private

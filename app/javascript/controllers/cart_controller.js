@@ -49,6 +49,6 @@ export default class extends Controller {
   }
 
   currency(amount) {
-    return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount / 1000)
+    return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 3, maximumFractionDigits: 3 }).format(amount / 1000)
   }
 }

@@ -6,6 +6,6 @@ class Order < ApplicationRecord
   validates :total, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   def total_in_currency
-    total / 1000.0
+    total / Currency.divisor
   end
 end

@@ -4,6 +4,9 @@
 
 store = Store.find_or_create_by!(name: "Tienda Demo")
 
+currency = Currency.find_or_initialize_by(code: "CLP")
+currency.update!(precision: 3, name: "Peso Chileno")
+
 providers = {
   "Distribuidora Alfa" => [
     { name: "Café Grano 1kg", price: 12_500, stock: 20 },
