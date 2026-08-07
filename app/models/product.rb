@@ -7,6 +7,10 @@ class Product < ApplicationRecord
 
   scope :available, -> { where("stock > ?", 0) }
 
+  def can_supply?(quantity)
+    quantity >= 0 && quantity <= stock
+  end
+
   def price_in_currency
     price / Currency.divisor
   end

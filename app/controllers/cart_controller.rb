@@ -9,7 +9,7 @@ class CartController < ApplicationController
     return unless product && valid_quantity?(quantity)
 
     target_quantity = cart[product.id.to_s].to_i + quantity
-    return unless within_stock?(product, target_quantity)
+    return unless stock_available?(product, target_quantity)
 
     cart[product.id.to_s] = target_quantity
     redirect_back fallback_location: root_path, notice: "Se agregó #{product.name} al carrito."
@@ -19,7 +19,7 @@ class CartController < ApplicationController
     product = cart_product
     quantity = requested_quantity
     return unless product && valid_quantity?(quantity)
-    return unless within_stock?(product, quantity)
+    return unless stock_available?(product, quantity)
 
     cart[product.id.to_s] = quantity
     redirect_to cart_path, notice: "Carrito actualizado."
@@ -61,8 +61,8 @@ class CartController < ApplicationController
     false
   end
 
-  def within_stock?(product, quantity)
-    return true if quantity <= product.stock
+  def stock_available?(product, quantity)
+    return true if product.can_supply?(quantity)
 
     redirect_with_error("No hay suficiente stock de #{product.name} (disponible: #{product.stock}).")
     false
