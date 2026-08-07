@@ -4,31 +4,33 @@
   <p>Tu carrito está vacío.</p>
   <p><%= link_to "Ir al catálogo", root_path, class: "btn" %></p>
 <% else %>
-  <% grand_total = 0 %>
-  <% @products.group_by { |p| p.provider }.each do |provider, products| %>
-    <% subtotal = products.sum { |p| p.price_cents * cart[p.id.to_s].to_i } %>
-    <% grand_total += subtotal %>
-    <section class="group">
-      <h3>Proveedor: <%= provider.name %></h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Producto</th>
-            <th>Precio unit.</th>
-            <th>Cantidad</th>
-            <th>Subtotal</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <%= render partial: "cart_line", collection: products, as: :product %>
-        </tbody>
-      </table>
-      <p class="subtotal text-right">Subtotal <%= provider.name %>: <%= money(subtotal) %></p>
-    </section>
-  <% end %>
+  <div data-controller="cart" data-cart-update-url-value="<%= cart_update_path %>">
+    <% grand_total = 0 %>
+    <% @products.group_by { |p| p.provider }.each do |provider, products| %>
+      <% subtotal = products.sum { |p| p.price_cents * cart[p.id.to_s].to_i } %>
+      <% grand_total += subtotal %>
+      <section class="group">
+        <h3>Proveedor: <%= provider.name %></h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Precio unit.</th>
+              <th>Cantidad</th>
+              <th>Subtotal</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= render partial: "cart_line", collection: products, as: :product %>
+          </tbody>
+        </table>
+        <p class="subtotal text-right" data-cart-target="providerTotal" data-provider-group="<%= provider.id %>">Subtotal <%= provider.name %>: <%= money(subtotal) %></p>
+      </section>
+    <% end %>
 
-  <p class="total text-right">Total general: <%= money(grand_total) %></p>
+    <p class="total text-right" data-cart-target="grandTotal">Total general: <%= money(grand_total) %></p>
 
-  <%= button_to "Confirmar compra", orders_path, method: :post, class: "btn", data: { turbo_confirm: "¿Confirmar la compra?" } %>
+    <%= button_to "Confirmar compra", orders_path, method: :post, class: "btn", data: { turbo_confirm: "¿Confirmar la compra?" } %>
+  </div>
 <% end %>
