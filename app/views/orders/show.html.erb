@@ -1,4 +1,4 @@
-<h1>Orden #<%= @order.id %></h1>
+<h1 class="page-title">Orden #<%= @order.id %></h1>
 <p class="muted">Tienda: <%= @order.store.name %> · Creada: <%= l(@order.created_at, format: :long) %></p>
 
 <% @order.suborders.each do |suborder| %>

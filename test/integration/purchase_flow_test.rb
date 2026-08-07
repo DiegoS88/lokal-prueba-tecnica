@@ -10,6 +10,28 @@ class PurchaseFlowTest < ActionDispatch::IntegrationTest
     @prod_b1 = Product.create!(provider: @provider_b, name: "B1", price_cents: 2000, stock: 5)
   end
 
+  test "el catalogo muestra todos los productos" do
+    get root_path
+    assert_response :success
+    assert_match(@prod_a1.name, response.body)
+    assert_match(@prod_b1.name, response.body)
+  end
+
+  test "el filtro por proveedor solo muestra sus productos" do
+    get root_path(provider_id: @provider_a.id)
+    assert_response :success
+    assert_match(@prod_a1.name, response.body)
+    assert_match(@prod_a2.name, response.body)
+    assert_no_match(@prod_b1.name, response.body)
+  end
+
+  test "un provider_id inexistente se ignora y muestra todo el catalogo" do
+    get root_path(provider_id: 999_999)
+    assert_response :success
+    assert_match(@prod_a1.name, response.body)
+    assert_match(@prod_b1.name, response.body)
+  end
+
   test "flujo completo: agrego, actualizo, elimino y confirmo" do
     get cart_path
     assert_response :success

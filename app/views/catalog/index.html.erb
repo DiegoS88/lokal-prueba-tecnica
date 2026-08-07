@@ -1,33 +1,40 @@
-<h1>Catálogo de productos</h1>
-<p class="muted">Tienda: <%= current_store.name %></p>
+<div class="catalog-layout">
+  <aside class="sidebar">
+    <h2>Proveedores</h2>
+    <ul>
+      <li>
+        <%= link_to "Todos", root_path, class: (@provider ? "" : "active") %>
+      </li>
+      <% @providers.each do |provider| %>
+        <li>
+          <%= link_to provider.name, root_path(provider_id: provider.id), class: (@provider == provider ? "active" : "") %>
+        </li>
+      <% end %>
+    </ul>
+  </aside>
 
-<table>
-  <thead>
-    <tr>
-      <th>Producto</th>
-      <th>Proveedor</th>
-      <th>Precio</th>
-      <th>Stock</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @products.each do |product| %>
-      <tr>
-        <td><%= product.name %></td>
-        <td><%= product.provider.name %></td>
-        <td><%= number_to_currency(product.price_cents / 100.0) %></td>
-        <td><%= product.stock %></td>
-        <td>
-          <%= form_with url: cart_add_path, method: :post do %>
-            <%= hidden_field_tag :product_id, product.id %>
-            <%= number_field_tag :quantity, 1, min: 1, max: product.stock, class: "qty-input" %>
-            <%= submit_tag "Agregar", class: "btn btn-sm" %>
-          <% end %>
-        </td>
-      </tr>
+  <section>
+    <h1 class="page-title"><%= @provider ? @provider.name : "Catálogo" %></h1>
+    <p class="muted"><%= @products.size %> productos disponibles</p>
+
+    <% if @products.any? %>
+      <div class="product-grid">
+        <% @products.each do |product| %>
+          <article class="product-card">
+            <h3 class="product-name"><%= product.name %></h3>
+            <p class="product-provider"><%= product.provider.name %></p>
+            <p class="product-price"><%= number_to_currency(product.price_cents / 100.0) %></p>
+            <p class="product-stock">Stock: <%= product.stock %></p>
+            <%= form_with url: cart_add_path, method: :post, class: "product-card-form" do %>
+              <%= hidden_field_tag :product_id, product.id %>
+              <%= number_field_tag :quantity, 1, min: 1, max: product.stock, class: "qty-input" %>
+              <%= submit_tag "Agregar", class: "btn btn-sm" %>
+            <% end %>
+          </article>
+        <% end %>
+      </div>
+    <% else %>
+      <p>No hay productos disponibles.</p>
     <% end %>
-  </tbody>
-</table>
-
-<p class="muted"><%= link_to "Ver carrito", cart_path %></p>
+  </section>
+</div>
