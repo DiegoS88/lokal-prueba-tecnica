@@ -1,0 +1,15 @@
+<tr>
+  <td><%= product.name %></td>
+  <td><%= money(product.price_cents) %></td>
+  <td>
+    <%= form_with url: cart_update_path, method: :post, class: "qty-form" do %>
+      <%= hidden_field_tag :product_id, product.id %>
+      <%= number_field_tag :quantity, cart[product.id.to_s].to_i, min: 1, max: product.stock, class: "qty-input" %>
+      <%= submit_tag "Actualizar", class: "btn btn-sm" %>
+    <% end %>
+  </td>
+  <td><%= money(product.price_cents * cart[product.id.to_s].to_i) %></td>
+  <td>
+    <%= button_to "Eliminar", cart_remove_path(product_id: product.id), method: :delete, class: "btn btn-sm btn-danger", data: { turbo_confirm: "¿Eliminar este producto?" } %>
+  </td>
+</tr>

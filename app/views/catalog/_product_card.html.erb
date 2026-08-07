@@ -1,0 +1,11 @@
+<article class="product-card">
+  <h3 class="product-name"><%= product.name %></h3>
+  <p class="product-provider"><%= product.provider.name %></p>
+  <p class="product-price"><%= money(product.price_cents) %></p>
+  <p class="product-stock">Stock: <%= product.stock %></p>
+  <%= form_with url: cart_add_path, method: :post, class: "product-card-form" do %>
+    <%= hidden_field_tag :product_id, product.id %>
+    <%= number_field_tag :quantity, 1, min: 1, max: product.stock, class: "qty-input" %>
+    <%= submit_tag "Agregar", class: "btn btn-sm" %>
+  <% end %>
+</article>
