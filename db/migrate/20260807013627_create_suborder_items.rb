@@ -1,0 +1,13 @@
+class CreateSuborderItems < ActiveRecord::Migration[8.1]
+  def change
+    create_table :suborder_items do |t|
+      t.references :suborder, null: false, foreign_key: true
+      t.references :product, null: false, foreign_key: true
+      t.integer :quantity
+      t.integer :unit_price_cents
+      t.integer :line_total_cents
+
+      t.timestamps
+    end
+  end
+end
