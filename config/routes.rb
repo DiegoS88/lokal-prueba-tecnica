@@ -11,4 +11,7 @@ root "catalog#index"
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   get "up" => "rails/health#show", as: :rails_health_check
+
+  # Los navegadores piden /favicon.ico aunque el layout use /icon.svg.
+  get "favicon.ico", to: redirect("/icon.svg")
 end
