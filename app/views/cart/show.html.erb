@@ -1,0 +1,50 @@
+<h1>Carrito</h1>
+
+<% if @products.empty? %>
+  <p>Tu carrito está vacío.</p>
+  <p><%= link_to "Ir al catálogo", root_path, class: "btn" %></p>
+<% else %>
+  <% grand_total = 0 %>
+  <% @products.group_by { |p| p.provider }.each do |provider, products| %>
+    <% subtotal = products.sum { |p| p.price_cents * cart[p.id.to_s].to_i } %>
+    <% grand_total += subtotal %>
+    <section class="group">
+      <h3>Proveedor: <%= provider.name %></h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Precio unit.</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% products.each do |product| %>
+            <tr>
+              <td><%= product.name %></td>
+              <td><%= number_to_currency(product.price_cents / 100.0) %></td>
+              <td>
+                <%= form_with url: cart_update_path, method: :post, class: "qty-form" do %>
+                  <%= hidden_field_tag :product_id, product.id %>
+                  <%= number_field_tag :quantity, cart[product.id.to_s].to_i, min: 1, max: product.stock, class: "qty-input" %>
+                  <%= submit_tag "Actualizar", class: "btn btn-sm" %>
+                <% end %>
+              </td>
+              <td><%= number_to_currency(product.price_cents * cart[product.id.to_s].to_i / 100.0) %></td>
+              <td>
+                <%= button_to "Eliminar", cart_remove_path(product_id: product.id), method: :delete, class: "btn btn-sm btn-danger", data: { turbo_confirm: "¿Eliminar este producto?" } %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <p class="subtotal text-right">Subtotal <%= provider.name %>: <%= number_to_currency(subtotal / 100.0) %></p>
+    </section>
+  <% end %>
+
+  <p class="total text-right">Total general: <%= number_to_currency(grand_total / 100.0) %></p>
+
+  <%= button_to "Confirmar compra", orders_path, method: :post, class: "btn", data: { turbo_confirm: "¿Confirmar la compra?" } %>
+<% end %>

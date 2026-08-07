@@ -1,0 +1,33 @@
+<h1>Orden #<%= @order.id %></h1>
+<p class="muted">Tienda: <%= @order.store.name %> · Creada: <%= l(@order.created_at, format: :long) %></p>
+
+<% @order.suborders.each do |suborder| %>
+  <section class="group">
+    <h3>Suborden · Proveedor: <%= suborder.provider.name %></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Precio unit. al comprar</th>
+          <th>Cantidad</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% suborder.suborder_items.each do |item| %>
+          <tr>
+            <td><%= item.product.name %></td>
+            <td><%= number_to_currency(item.unit_price_cents / 100.0) %></td>
+            <td><%= item.quantity %></td>
+            <td><%= number_to_currency(item.line_total_cents / 100.0) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <p class="subtotal text-right">Subtotal suborden: <%= number_to_currency(suborder.subtotal_cents / 100.0) %></p>
+  </section>
+<% end %>
+
+<p class="total text-right">Total de la orden: <%= number_to_currency(@order.total_cents / 100.0) %></p>
+
+<p><%= link_to "Volver al catálogo", root_path, class: "btn" %></p>

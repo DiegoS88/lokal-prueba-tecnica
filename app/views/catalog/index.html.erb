@@ -1,0 +1,33 @@
+<h1>Catálogo de productos</h1>
+<p class="muted">Tienda: <%= current_store.name %></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Producto</th>
+      <th>Proveedor</th>
+      <th>Precio</th>
+      <th>Stock</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @products.each do |product| %>
+      <tr>
+        <td><%= product.name %></td>
+        <td><%= product.provider.name %></td>
+        <td><%= number_to_currency(product.price_cents / 100.0) %></td>
+        <td><%= product.stock %></td>
+        <td>
+          <%= form_with url: cart_add_path, method: :post do %>
+            <%= hidden_field_tag :product_id, product.id %>
+            <%= number_field_tag :quantity, 1, min: 1, max: product.stock, class: "qty-input" %>
+            <%= submit_tag "Agregar", class: "btn btn-sm" %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p class="muted"><%= link_to "Ver carrito", cart_path %></p>
