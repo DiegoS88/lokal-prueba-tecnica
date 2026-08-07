@@ -20,8 +20,8 @@ export default class extends Controller {
 
     this.quantityTargets.forEach((input) => {
       const quantity = Math.max(0, parseInt(input.value, 10) || 0)
-      const unitPrice = parseInt(input.dataset.unitPrice, 10)
-      const providerId = input.dataset.providerGroup
+      const unitPrice = parseInt(input.dataset.cartUnitPrice, 10)
+      const providerId = input.dataset.cartProviderGroup
       const total = quantity * unitPrice
 
       const lineTotal = input.closest("tr").querySelector('[data-cart-target="lineTotal"]')
