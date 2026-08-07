@@ -12,7 +12,7 @@ class CartController < ApplicationController
     return unless within_stock?(product, target_quantity)
 
     cart[product.id.to_s] = target_quantity
-    redirect_to cart_path, notice: "Se agregó #{product.name} al carrito."
+    redirect_back fallback_location: root_path, notice: "Se agregó #{product.name} al carrito."
   end
 
   def update
