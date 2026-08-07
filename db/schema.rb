@@ -69,6 +69,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_07_191636) do
 
   create_table "providers", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.decimal "min_purchase", default: "0.0", null: false
     t.string "name"
     t.datetime "updated_at", null: false
   end

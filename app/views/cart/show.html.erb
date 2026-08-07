@@ -11,6 +11,7 @@
       <% grand_total += subtotal %>
       <section class="group">
         <h3>Proveedor: <%= provider.name %></h3>
+        <h4>Compra mínima: <%= money(provider.min_purchase) %></h4>
         <table>
           <thead>
             <tr>

@@ -6,6 +6,7 @@ class SuborderTest < ActiveSupport::TestCase
     @provider_b = Provider.create!(name: "Proveedor B")
     @product_a = Product.create!(provider: @provider_a, name: "A", price: 100, stock: 5)
     @product_b = Product.create!(provider: @provider_b, name: "B", price: 200, stock: 5)
+    @currency = Currency.create!(code: "CLP", precision: 3, name: "Peso Chileno")
     @store = Store.create!(name: "Tienda Demo")
     @order = Order.create!(store: @store, total: 0)
   end
@@ -23,5 +24,20 @@ class SuborderTest < ActiveSupport::TestCase
     suborder = @order.suborders.build(provider: @provider_a, subtotal: -5)
 
     assert_not suborder.valid?
+  end
+
+  test "rechaza subtotal menor al monto mínimo del proveedor" do
+    @provider_a.update!(min_purchase: 1.0)
+    suborder = @order.suborders.build(provider: @provider_a, subtotal: 0)
+
+    assert_not suborder.valid?
+    assert suborder.errors[:subtotal].any?
+  end
+
+  test "acepta subtotal igual al monto mínimo del proveedor" do
+    @provider_a.update!(min_purchase: 1.0)
+    suborder = @order.suborders.build(provider: @provider_a, subtotal: 1)
+
+    assert suborder.valid?
   end
 end
