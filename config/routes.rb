@@ -7,7 +7,7 @@ root "catalog#index"
   post "cart/update" => "cart#update"
   delete "cart/remove" => "cart#remove"
 
-  resources :orders, only: %i[create show]
+  resources :orders, only: %i[index create show]
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   get "up" => "rails/health#show", as: :rails_health_check

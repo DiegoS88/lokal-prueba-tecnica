@@ -1,4 +1,8 @@
 class OrdersController < ApplicationController
+  def index
+    @orders = current_store.orders.order(created_at: :desc)
+  end
+
   def create
     service = Orders::Create.new(store: current_store, lines: cart)
 

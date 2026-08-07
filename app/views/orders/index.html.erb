@@ -1,0 +1,29 @@
+<h1 class="page-title">Mis Órdenes</h1>
+<p class="muted"><%= @orders.size %> órdenes creadas en <%= current_store.name %></p>
+
+<% if @orders.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Orden</th>
+        <th>Creada</th>
+        <th>Subórdenes</th>
+        <th>Total</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @orders.each do |order| %>
+        <tr>
+          <td><%= order.id %></td>
+          <td><%= l(order.created_at, format: :long) %></td>
+          <td><%= order.suborders.count %></td>
+          <td><%= money(order.total) %></td>
+          <td><%= link_to "Ver", order, class: "btn" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No hay órdenes creadas todavía.</p>
+<% end %>
