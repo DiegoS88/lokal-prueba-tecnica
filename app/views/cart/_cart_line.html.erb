@@ -1,16 +1,16 @@
 <tr data-cart-provider-group="<%= product.provider.id %>">
   <td><%= product.name %></td>
-  <td><%= money(product.price_cents) %></td>
+  <td><%= money(product.price) %></td>
   <td>
     <%= form_with url: cart_update_path, method: :post, class: "qty-form" do %>
       <%= hidden_field_tag :product_id, product.id %>
       <%= number_field_tag :quantity, cart[product.id.to_s].to_i, min: 1, max: product.stock, class: "qty-input",
             data: { cart_target: "quantity", action: "change->cart#changed",
-                    cart_unit_price: product.price_cents,
+                    cart_unit_price: product.price,
                     cart_provider_group: product.provider.id } %>
     <% end %>
   </td>
-  <td data-cart-target="lineTotal"><%= money(product.price_cents * cart[product.id.to_s].to_i) %></td>
+  <td data-cart-target="lineTotal"><%= money(product.price * cart[product.id.to_s].to_i) %></td>
   <td>
     <%= button_to "Eliminar", cart_remove_path(product_id: product.id), method: :delete, class: "btn btn-sm btn-danger", data: { turbo_confirm: "¿Eliminar este producto?" } %>
   </td>

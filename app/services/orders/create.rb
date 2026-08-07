@@ -21,7 +21,7 @@ module Orders
 
       ActiveRecord::Base.transaction do
         products = lock_and_build_items!
-        order = Order.new(store: @store, total_cents: sum_total(@items))
+        order = Order.new(store: @store, total: sum_total(@items))
         order.save!
         persist_items!(order)
         persist_suborders!(order)
@@ -47,8 +47,8 @@ module Orders
         {
           product: product,
           quantity: quantity,
-          unit_price_cents: product.price_cents,
-          line_total_cents: product.price_cents * quantity
+          unit_price: product.price,
+          line_total: product.price * quantity
         }
       end
       @items.map { |item| item[:product] }
@@ -59,8 +59,8 @@ module Orders
         order.order_items.create!(
           product: item[:product],
           quantity: item[:quantity],
-          unit_price_cents: item[:unit_price_cents],
-          line_total_cents: item[:line_total_cents]
+          unit_price: item[:unit_price],
+          line_total: item[:line_total]
         )
       end
     end
@@ -69,14 +69,14 @@ module Orders
       @items.group_by { |item| item[:product].provider_id }.each do |provider_id, provider_items|
         suborder = order.suborders.create!(
           provider_id: provider_id,
-          subtotal_cents: provider_items.sum { |item| item[:line_total_cents] }
+          subtotal: provider_items.sum { |item| item[:line_total] }
         )
         provider_items.each do |item|
           suborder.suborder_items.create!(
             product: item[:product],
             quantity: item[:quantity],
-            unit_price_cents: item[:unit_price_cents],
-            line_total_cents: item[:line_total_cents]
+            unit_price: item[:unit_price],
+            line_total: item[:line_total]
           )
         end
       end
@@ -93,7 +93,7 @@ module Orders
     end
 
     def sum_total(items)
-      items.sum { |item| item[:line_total_cents] }
+      items.sum { |item| item[:line_total] }
     end
   end
 end

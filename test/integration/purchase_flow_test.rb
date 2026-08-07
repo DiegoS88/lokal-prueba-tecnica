@@ -5,9 +5,9 @@ class PurchaseFlowTest < ActionDispatch::IntegrationTest
     @store = Store.create!(name: "Tienda Demo")
     @provider_a = Provider.create!(name: "Proveedor A")
     @provider_b = Provider.create!(name: "Proveedor B")
-    @prod_a1 = Product.create!(provider: @provider_a, name: "A1", price_cents: 1000, stock: 10)
-    @prod_a2 = Product.create!(provider: @provider_a, name: "A2", price_cents: 700, stock: 4)
-    @prod_b1 = Product.create!(provider: @provider_b, name: "B1", price_cents: 2000, stock: 5)
+    @prod_a1 = Product.create!(provider: @provider_a, name: "A1", price: 1000, stock: 10)
+    @prod_a2 = Product.create!(provider: @provider_a, name: "A2", price: 700, stock: 4)
+    @prod_b1 = Product.create!(provider: @provider_b, name: "B1", price: 2000, stock: 5)
   end
 
   test "el catalogo muestra todos los productos" do
@@ -65,7 +65,7 @@ class PurchaseFlowTest < ActionDispatch::IntegrationTest
     order = Order.last
     assert_equal 1, order.suborders.count
     assert_equal [ @provider_a.id ], order.suborders.map(&:provider_id)
-    assert_equal @prod_a1.price_cents * 2, order.total_cents
+    assert_equal @prod_a1.price * 2, order.total
   end
 
   test "confirmar con stock insuficiente muestra error y no crea orden" do

@@ -3,11 +3,11 @@ class Suborder < ApplicationRecord
   belongs_to :provider
   has_many :suborder_items, dependent: :destroy
 
-  validates :subtotal_cents, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :subtotal, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validate :same_provider_products
 
   def subtotal_in_currency
-    subtotal_cents / 100.0
+    subtotal / 1000.0
   end
 
   private

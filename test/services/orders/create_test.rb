@@ -5,9 +5,9 @@ class Orders::CreateTest < ActiveSupport::TestCase
     @store = Store.create!(name: "Tienda Demo")
     @provider_a = Provider.create!(name: "Proveedor A")
     @provider_b = Provider.create!(name: "Proveedor B")
-    @prod_a1 = Product.create!(provider: @provider_a, name: "A1", price_cents: 1000, stock: 10)
-    @prod_b1 = Product.create!(provider: @provider_b, name: "B1", price_cents: 2000, stock: 5)
-    @prod_b2 = Product.create!(provider: @provider_b, name: "B2", price_cents: 500, stock: 3)
+    @prod_a1 = Product.create!(provider: @provider_a, name: "A1", price: 1000, stock: 10)
+    @prod_b1 = Product.create!(provider: @provider_b, name: "B1", price: 2000, stock: 5)
+    @prod_b2 = Product.create!(provider: @provider_b, name: "B2", price: 500, stock: 3)
   end
 
   test "crea una suborden por proveedor con sus totals" do
@@ -22,21 +22,21 @@ class Orders::CreateTest < ActiveSupport::TestCase
     sub_a = order.suborders.find_by(provider: @provider_a)
     sub_b = order.suborders.find_by(provider: @provider_b)
 
-    assert_equal @prod_a1.price_cents * 2, sub_a.subtotal_cents
-    assert_equal @prod_b1.price_cents + @prod_b2.price_cents * 3, sub_b.subtotal_cents
+    assert_equal @prod_a1.price * 2, sub_a.subtotal
+    assert_equal @prod_b1.price + @prod_b2.price * 3, sub_b.subtotal
 
-    expected_total = @prod_a1.price_cents * 2 + @prod_b1.price_cents + @prod_b2.price_cents * 3
-    assert_equal expected_total, order.total_cents
+    expected_total = @prod_a1.price * 2 + @prod_b1.price + @prod_b2.price * 3
+    assert_equal expected_total, order.total
   end
 
   test "el item conserva el precio del momento de la compra aunque luego cambie" do
     order = Orders::Create.new(store: @store, lines: { @prod_a1.id => 1 }).call
     item = order.order_items.find_by(product: @prod_a1)
 
-    @prod_a1.update!(price_cents: 9999) # cambia luego de comprar
+    @prod_a1.update!(price: 9999) # cambia luego de comprar
 
-    assert_equal 1000, item.reload.unit_price_cents
-    assert_equal 1000, item.line_total_cents
+    assert_equal 1000, item.reload.unit_price
+    assert_equal 1000, item.line_total
   end
 
   test "ante stock insuficiente falla sin dejar registros a medio crear" do

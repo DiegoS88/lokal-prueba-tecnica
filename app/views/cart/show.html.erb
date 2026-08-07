@@ -7,7 +7,7 @@
   <div data-controller="cart" data-cart-update-url-value="<%= cart_update_path %>">
     <% grand_total = 0 %>
     <% @products.group_by { |p| p.provider }.each do |provider, products| %>
-      <% subtotal = products.sum { |p| p.price_cents * cart[p.id.to_s].to_i } %>
+      <% subtotal = products.sum { |p| p.price * cart[p.id.to_s].to_i } %>
       <% grand_total += subtotal %>
       <section class="group">
         <h3>Proveedor: <%= provider.name %></h3>
