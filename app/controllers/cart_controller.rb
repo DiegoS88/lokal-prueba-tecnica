@@ -4,45 +4,24 @@ class CartController < ApplicationController
   end
 
   def add
-    product = Product.available.find_by(id: params[:product_id])
-    quantity = params[:quantity].to_i
+    product = available_product
+    quantity = requested_quantity
+    return unless product && valid_quantity?(quantity)
 
-if product.nil?
-      return redirect_with_error("El producto no existe o no tiene stock disponible.")
-end
+    target_quantity = cart[product.id.to_s].to_i + quantity
+    return unless within_stock?(product, target_quantity)
 
-    if quantity < 1
-      return redirect_with_error("La cantidad debe ser un número entero mayor que cero.")
-    end
-
-    current_qty = cart[product.id.to_s].to_i
-    new_qty = current_qty + quantity
-    if new_qty > product.stock
-      return redirect_with_error("No hay suficiente stock de #{product.name} (disponible: #{product.stock}).")
-    end
-
-    cart[product.id.to_s] = new_qty
+    cart[product.id.to_s] = target_quantity
     redirect_to cart_path, notice: "Se agregó #{product.name} al carrito."
   end
 
   def update
-    product_id = params[:product_id].to_s
-    quantity = params[:quantity].to_i
+    product = cart_product
+    quantity = requested_quantity
+    return unless product && valid_quantity?(quantity)
+    return unless within_stock?(product, quantity)
 
-    unless cart.key?(product_id)
-      return redirect_to cart_path, alert: "El producto no está en el carrito."
-    end
-
-    if quantity < 1
-      return redirect_to cart_path, alert: "La cantidad debe ser un entero mayor que cero."
-    end
-
-    product = Product.find_by(id: product_id)
-    if product.nil? || quantity > product.stock
-      return redirect_to cart_path, alert: "Stock insuficiente para #{product&.name || 'el producto'}."
-    end
-
-    cart[product_id] = quantity
+    cart[product.id.to_s] = quantity
     redirect_to cart_path, notice: "Carrito actualizado."
   end
 
@@ -52,6 +31,42 @@ end
   end
 
   private
+
+  def available_product
+    product = Product.available.find_by(id: params[:product_id])
+    return product if product
+
+    redirect_with_error("El producto no existe o no tiene stock disponible.")
+    nil
+  end
+
+  def cart_product
+    product_id = params[:product_id].to_s
+    unless cart.key?(product_id)
+      redirect_to cart_path, alert: "El producto no está en el carrito."
+      return nil
+    end
+
+    Product.find_by(id: product_id)
+  end
+
+  def requested_quantity
+    params[:quantity].to_i
+  end
+
+  def valid_quantity?(quantity)
+    return true if quantity >= 1
+
+    redirect_with_error("La cantidad debe ser un número entero mayor que cero.")
+    false
+  end
+
+  def within_stock?(product, quantity)
+    return true if quantity <= product.stock
+
+    redirect_with_error("No hay suficiente stock de #{product.name} (disponible: #{product.stock}).")
+    false
+  end
 
   def redirect_with_error(message)
     redirect_back fallback_location: root_path, alert: message
