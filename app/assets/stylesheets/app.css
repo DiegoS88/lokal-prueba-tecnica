@@ -113,7 +113,9 @@ body {
 
 .product-name { font-family: var(--serif); font-size: 1.05rem; font-weight: 600; margin: 0; line-height: 1.2; }
 .product-provider { font-size: 0.8rem; color: var(--muted); }
-.product-price { font-family: var(--serif); font-size: 1.3rem; font-weight: 700; color: var(--brand); }
+.product-price { font-family: var(--serif); font-size: 1.3rem; font-weight: 700; color: var(--brand); display: flex; align-items: baseline; gap: 0.5rem; }
+.product-price .price-original { text-decoration: line-through; color: var(--muted); font-size: 1rem; font-weight: 500; }
+.product-price .price-discounted { color: var(--accent); }
 .product-stock { font-size: 0.8rem; color: var(--muted); }
 
 .product-card-form { display: flex; gap: 0.4rem; margin-top: auto; }

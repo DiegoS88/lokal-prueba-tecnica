@@ -1,0 +1,8 @@
+<p class="product-price">
+  <% if (discount = product.active_discount) %>
+    <span class="price-original"><%= money(product.price) %></span>
+    <span class="price-discounted"><%= money(discount.discounted_price(product)) %></span>
+  <% else %>
+    <span class="price"><%= money(product.price) %></span>
+  <% end %>
+</p>
