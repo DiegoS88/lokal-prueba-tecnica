@@ -11,15 +11,26 @@ export default class extends Controller {
   }
 
   changed(event) {
+    const input = event.currentTarget
+    const clamped = this.clamp(input)
+    if (clamped !== input.value) {
+      input.value = clamped
+    }
     this.render()
-    this.persist(event.currentTarget)
+    this.persist(input)
+  }
+
+  clamp(input) {
+    const value = parseInt(input.value, 10) || 0
+    const stock = parseInt(input.dataset.cartMaxStock, 10)
+    return Math.min(Math.max(value, 1), stock)
   }
 
   render() {
     const providerTotals = {}
 
     this.quantityTargets.forEach((input) => {
-      const quantity = Math.max(0, parseInt(input.value, 10) || 0)
+      const quantity = this.clamp(input)
       const unitPrice = parseInt(input.dataset.cartUnitPrice, 10)
       const providerId = input.dataset.cartProviderGroup
       const total = quantity * unitPrice

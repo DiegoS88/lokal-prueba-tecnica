@@ -7,6 +7,7 @@
       <%= number_field_tag :quantity, cart[product.id.to_s].to_i, min: 1, max: product.stock, class: "qty-input",
             data: { cart_target: "quantity", action: "change->cart#changed",
                     cart_unit_price: product.price,
+                    cart_max_stock: product.stock,
                     cart_provider_group: product.provider.id } %>
     <% end %>
   </td>
