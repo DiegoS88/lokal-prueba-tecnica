@@ -55,8 +55,6 @@ body {
 
 .nav-cart { color: var(--brand); font-weight: 600; }
 
-.nav-logged { margin-left: 0.25rem; font-size: 0.8rem; color: var(--muted); }
-
 /* ---------- Layout ---------- */
 .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
 
