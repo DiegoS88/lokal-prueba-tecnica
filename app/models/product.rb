@@ -1,5 +1,11 @@
 class Product < ApplicationRecord
   belongs_to :provider
+  has_many :discount_products
+  has_many :discounts, through: :discount_products
+
+  def active_discount
+    discounts.active.order(:end_date).first
+  end
 
   validates :name, presence: true
   validates :price, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }

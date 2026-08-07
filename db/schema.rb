@@ -10,13 +10,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_07_171232) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_07_191636) do
   create_table "currencies", force: :cascade do |t|
     t.string "code", null: false
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.integer "precision", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "discount_products", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "discount_id", null: false
+    t.integer "product_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["discount_id", "product_id"], name: "index_discount_products_on_discount_id_and_product_id", unique: true
+    t.index ["discount_id"], name: "index_discount_products_on_discount_id"
+    t.index ["product_id"], name: "index_discount_products_on_product_id"
+  end
+
+  create_table "discounts", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "end_date", null: false
+    t.date "start_date", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "value", null: false
   end
 
   create_table "order_items", force: :cascade do |t|
@@ -83,6 +101,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_07_171232) do
     t.index ["provider_id"], name: "index_suborders_on_provider_id"
   end
 
+  add_foreign_key "discount_products", "discounts"
+  add_foreign_key "discount_products", "products"
   add_foreign_key "order_items", "orders"
   add_foreign_key "order_items", "products"
   add_foreign_key "orders", "stores"

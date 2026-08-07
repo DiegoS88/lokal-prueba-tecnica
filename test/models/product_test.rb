@@ -40,4 +40,19 @@ class ProductTest < ActiveSupport::TestCase
 
     assert_equal 2, product.price_in_currency
   end
+
+  test "active_discount devuelve el descuento vigente más cercano a vencer" do
+    product = @provider.products.create!(name: "A", price: 100, stock: 3)
+    product.discounts.create!(value: 0.1, start_date: Date.yesterday, end_date: Date.today + 5)
+    close = product.discounts.create!(value: 0.2, start_date: Date.yesterday, end_date: Date.tomorrow)
+
+    assert_equal close, product.active_discount
+  end
+
+  test "active_discount es nil cuando no hay descuentos vigentes" do
+    product = @provider.products.create!(name: "A", price: 100, stock: 3)
+    product.discounts.create!(value: 0.5, start_date: Date.tomorrow, end_date: Date.today + 5)
+
+    assert_nil product.active_discount
+  end
 end
